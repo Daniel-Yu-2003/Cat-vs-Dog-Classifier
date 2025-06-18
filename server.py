@@ -10,7 +10,7 @@ import torch
 import requests
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app) 
 
 model = load_model('light_cat_dog.h5')
 
