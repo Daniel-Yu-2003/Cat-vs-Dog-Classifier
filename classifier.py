@@ -7,7 +7,7 @@ from tensorflow.keras.models import Model
 # Hyperparameters
 IMG_SIZE = 128
 BATCH_SIZE = 32
-EPOCHS = 5  # Can increase to 10 if needed
+EPOCHS = 5 
 
 # Data generators with augmentation
 train_datagen = ImageDataGenerator(
@@ -66,6 +66,5 @@ history = model.fit(
     verbose=1
 )
 
-# Save lightweight model
 model.save('light_cat_dog.h5')
-print("Training complete! Model saved as light_cat_dog.h5")
+print("Training complete")
