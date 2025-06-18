@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cat vs. Dog Classifier</title>
+    <style>
+        body { font-family: Arial; text-align: center; margin-top: 50px; }
+        #result { margin-top: 20px; font-size: 24px; }
+        img { max-width: 300px; margin: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Cat vs. Dog Classifier</h1>
+    <h1>Upload Cat or Dog Image</h1>
+    <input type="file" id="imageUpload" accept="image/*">
+    <button onclick="predict()">Predict Self-trained Model</button>
+    <button onclick="predictO()">Predict Online Model</button>
+    <div id="result"></div>
+    <img id="preview" style="display:none;">
+
+    <script>
+        async function predict() {
+            const fileInput = document.getElementById('imageUpload');
+            const file = fileInput.files[0];
+            const preview = document.getElementById('preview');
+            const resultDiv = document.getElementById('result');
+            
+            if (!file) {
+                resultDiv.innerText = "Please select an image first!";
+                return;
+            }
+
+            // Show preview
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
+            resultDiv.innerText = "Classifying...";
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const response = await fetch('http://localhost:5000/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                resultDiv.innerHTML = `
+                    <strong>Prediction:</strong> ${data.prediction.toUpperCase()} <br>
+                    <strong>Confidence:</strong> ${data.confidence}%
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerText = "Error: " + error.message;
+            }
+        }
+
+        async function predictO() {
+            const fileInput = document.getElementById('imageUpload');
+            const file = fileInput.files[0];
+            const preview = document.getElementById('preview');
+            const resultDiv = document.getElementById('result');
+            
+            if (!file) {
+                resultDiv.innerText = "Please select an image first!";
+                return;
+            }
+
+            // Show preview
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
+            resultDiv.innerText = "Classifying...";
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const response = await fetch('http://localhost:5000/predictO', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                resultDiv.innerHTML = `
+                    <strong>Prediction:</strong> ${data.prediction.toUpperCase()} <br>
+                    <strong>Confidence:</strong> ${data.confidence}%
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerText = "Error: " + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
